@@ -26,7 +26,14 @@ def preprocess(data):
     cleaned_dates = [date.replace('\u202f', '') for date in df['date_time']]
     
     # Convert cleaned date strings to datetime objects
-    datetime_objects = pd.to_datetime(cleaned_dates, format='%d/%m/%y, %I:%M%p - ')
+    def convert_to_datetime(date_string):
+         try:
+             return pd.to_datetime(date_string, format='%d/%m/%y, %I:%M%p - ')
+         except ValueError:
+             return pd.to_datetime(date_string, format='%m/%d/%y, %I:%M%p - ')
+    
+    datetime_objects = [convert_to_datetime(date) for date in cleaned_dates]
+
     df['date_time']=datetime_objects
     
     users=[]
